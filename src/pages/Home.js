@@ -1,5 +1,5 @@
-import { Fragment } from "react";
-import { Link } from 'react-router-dom';
+import {Fragment} from "react";
+import {Link} from 'react-router-dom';
 import HelloWorld from "../components/HelloWorld/HelloWorld";
 
 const Home = () => {

@@ -1,5 +1,4 @@
 import React from "react";
-import "./Button.css";
 
 const Button = ({text, handleButton}) => {
 
@@ -8,7 +7,7 @@ const Button = ({text, handleButton}) => {
     }
 
     return (
-        <div className="mx-auto w-[200px] text-center">
+        <div className="mx-auto w-[200px] text-center rounded-3xl bg-gray-200 cursor-pointer mb-3 mt-3">
             <button onClick={handleClick}>
                 {text}
             </button>

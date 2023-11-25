@@ -1,5 +1,4 @@
 import React from "react";
-import "./Selector.css";
 
 const Selector = ({courses, selectedCourse, handleSelectCourse}) => {
 
@@ -8,7 +7,7 @@ const Selector = ({courses, selectedCourse, handleSelectCourse}) => {
     }
 
     return (
-        <div className="min-w-[900px] max-w-[80vw] mx-auto flex justify-center">
+        <div className="max-w-[80vw] mx-auto flex justify-center">
 
             <div>
                 <p>Выберите курс</p>

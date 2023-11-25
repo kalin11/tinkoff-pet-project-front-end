@@ -1,5 +1,4 @@
 import React from "react";
-import "./Selector.css";
 
 const TopicSelector = ({topics, selectedTopic, handleSelectedTopic}) => {
 

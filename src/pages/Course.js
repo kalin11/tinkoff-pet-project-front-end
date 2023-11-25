@@ -11,7 +11,7 @@ const Course = ({courses, selectedCourse, handleSelectCourse, setCourses}) => {
 
     useEffect(() => {
 
-        const get_courses = () => {
+        const getCourses = () => {
             return axios
                 .get('/courses')
                 .then((response) => {
@@ -22,8 +22,8 @@ const Course = ({courses, selectedCourse, handleSelectCourse, setCourses}) => {
                 });
         }
 
-        const get_data = async () => {
-            let courses = await get_courses();
+        const getData = async () => {
+            let courses = await getCourses();
 
             let list = [];
             for (let i = 0; i < courses.length; i++) {
@@ -40,22 +40,22 @@ const Course = ({courses, selectedCourse, handleSelectCourse, setCourses}) => {
             setCourses(list);
         }
 
-        get_data().catch(console.error);
+        getData().catch(console.error);
 
     }, [setCourses]);
 
     const handleButton = () => {
-        navigate('/subjects');
+        navigate('/subjects?course=' + selectedCourse);
     }
 
     return (
         <div className="">
             <Header/>
-            <div className=" mt-[200px]">
+            <div className="mt-[200px]">
                 <Selector courses={courses} selectedCourse={selectedCourse} handleSelectCourse={handleSelectCourse}/>
                 <Button text="Показать предметы" handleButton={handleButton}/>
             </div>
-            {/*<Footer/>*/}
+
         </div>
     );
 }

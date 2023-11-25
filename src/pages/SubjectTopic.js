@@ -1,19 +1,24 @@
-import axios from "axios";
-import {useEffect} from "react";
+import axios from "../config/axios";
+import {useEffect, useState} from "react";
 import Header from "../components/headers/Header";
 import SubjectTopicForm from "../components/form/SubjectTopicForm";
 import SubjectTopicList from "../components/items/SubjectTopicList";
+import {useParams} from "react-router-dom";
 
-const url = axios.create({
-    baseURL: 'http://localhost:8080/v1/',
-});
-const SubjectTopic = ({topics, setTopics, topicType, setSelectedTopicType, course, subjectId, allTopics, setAllTopics}) => {
+const SubjectTopic = ({topics, setTopics, topicType, setSelectedTopicType, course, allTopics, setAllTopics, subjectTopicId, setSubjectTopicId}) => {
+
+    const {id} = useParams();
+
+    const [pageNumber, setPageNumber] = useState(0);
+    const [pageSize, setPageSize] = useState(3);
+    const [totalPages, setTotalPages] = useState(10);
 
     useEffect(() => {
 
-        const get_topics = () => {
-            return url
-                .get('/subject-topics', {params: {course: course, subjectId: subjectId}})
+        const getTopics = () => {
+            console.log(id);
+            return axios
+                .get('/subject-topics', {params: {pageNumber: pageNumber, pageSize: pageSize, subjectId: parseInt(id)}})
                 .then((response) => {
                     return response.data;
                 })
@@ -22,8 +27,8 @@ const SubjectTopic = ({topics, setTopics, topicType, setSelectedTopicType, cours
                 })
         }
 
-        const get_all_topics = () => {
-            return url
+        const getAllTopics = () => {
+            return axios
                 .get('/topics')
                 .then((response) => {
                     return response.data;
@@ -33,32 +38,19 @@ const SubjectTopic = ({topics, setTopics, topicType, setSelectedTopicType, cours
                 })
         };
 
-        const get_data_all_topics = async () => {
-            let allTopics = await get_all_topics();
-
-            let list = [];
-            for (let i = 0; i < allTopics.length; i++) {
-                 let id = allTopics[i].id;
-                 let type = allTopics[i].topic_type;
-                 list.push(
-                     {
-                         id: id,
-                         type: type
-                     }
-                 );
-            }
+        const getDataAllTopics = async () => {
+            let allTopics = await getAllTopics();
             setAllTopics(allTopics);
-            console.log(allTopics);
         }
 
-        const get_data = async () => {
-            let topics = await get_topics();
-
+        const getData = async () => {
+            let topics = await getTopics();
+            console.log(topics);
             let list = [];
-            for (let i = 0; i < topics.length; i++) {
-                let subject_topic_id = topics[i].id;
-                let id = topics[i].topic.id;
-                let topic_type = topics[i].topic.topic_type;
+            for (let i = 0; i < topics.content.length; i++) {
+                let subject_topic_id = topics.content[i].id;
+                let id = topics.content[i].topic.id;
+                let topic_type = topics.content[i].topic.topic_type;
                 list.push(
                     {
                         id: subject_topic_id,
@@ -70,23 +62,28 @@ const SubjectTopic = ({topics, setTopics, topicType, setSelectedTopicType, cours
                 );
             }
             setTopics(list);
-            console.log(list);
         }
 
-        get_data().catch(console.error);
-        get_data_all_topics().catch(console.error);
+        getData().catch(console.error);
+        getDataAllTopics().catch(console.error);
     }, []);
 
     return (
         <div>
             <Header/>
             <div className="mt-[200px]">
-                <SubjectTopicList topics={topics} selectedTopic={topicType}
-                                  setSelectedTopic={setSelectedTopicType}/>
-                <SubjectTopicForm topics={allTopics} selectedTopic={topicType} setSelectedTopic={setSelectedTopicType}
-                                  course={course} subjectId={subjectId}/>
+                <SubjectTopicList topics={topics}
+                                  selectedTopic={topicType}
+                                  setSelectedTopic={setSelectedTopicType}
+                                  setSubjectTopicId={setSubjectTopicId}
+                                  selectedSubjectTopicId={subjectTopicId}
+                />
+                <SubjectTopicForm topics={allTopics}
+                                  selectedTopic={topicType}
+                                  setSelectedTopic={setSelectedTopicType}
+                                  course={course}
+                                  subjectId={id}/>
             </div>
-            {/*<Footer/>*/}
         </div>
     )
 
