@@ -1,33 +1,34 @@
 import Button from "../buttons/Button";
-import "./Form.css"
 import {useState} from "react";
-import axios from "axios";
+import axios from "../../config/axios";
 
-const SubjectForm = () => {
+const SubjectForm = ({ courseNumber }) => {
 
     const [subjectTitle, setSubjectTitle] = useState('');
 
-    const url = axios.create({
-        baseURL: 'http://localhost:8080/v1/',
-    });
 
     const createNewSubject = (event) => {
         event.preventDefault();
         console.log(subjectTitle);
-
-        return url
-            .post('/subjects', {name: subjectTitle})
-            .then((response) => {
-                return response.data;
-            })
-            .catch((error) => {
-                return error;
-            });
+        if (subjectTitle === '') {
+            alert('Почему название предмета пустое?');
+            return false;
+        }
+        else {
+            return axios
+                .post('/subjects', {course_number: courseNumber,name: subjectTitle})
+                .then((response) => {
+                    return response.data;
+                })
+                .catch((error) => {
+                    return error;
+                });
+        }
 
     }
 
     return (
-        <div className="form min-w-[900px] max-w-[80vw] mx-auto flex justify-center">
+        <div className="min-w-[900px] max-w-[80vw] mx-auto flex justify-center">
             <form>
                 <label>
                     <input className="border-2 border-purple-300" type="text" placeholder="Название продукта"

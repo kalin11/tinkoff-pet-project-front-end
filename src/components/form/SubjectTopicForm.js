@@ -1,6 +1,5 @@
-import "./Form.css"
 import {useState} from "react";
-import axios from "axios";
+import axios from "../../config/axios";
 import TopicSelector from "../selects/TopicSelector";
 import Button from "../buttons/Button";
 
@@ -8,9 +7,6 @@ const SubjectForm = ({topics, selectedTopic, setSelectedTopic, course, subjectId
 
     const [topicTitle, setTopicTitle] = useState('');
 
-    const url = axios.create({
-        baseURL: 'http://localhost:8080/v1/',
-    });
 
     const handleTopicTitle = (event) => {
         event.preventDefault();
@@ -21,7 +17,7 @@ const SubjectForm = ({topics, selectedTopic, setSelectedTopic, course, subjectId
         event.preventDefault();
         console.log(event.target);
 
-        return url
+        return axios
             .post('/subject-topics', {course_number: course, subject_id: subjectId, topic_id: selectedTopic})
             .then((response) => {
                 return response.data;
