@@ -4,11 +4,12 @@ import Header from "../components/headers/Header";
 import SubjectItemList from "../components/items/SubjectItemList";
 import SubjectForm from "../components/form/SubjectForm";
 import {Pagination} from "@mui/material";
-import {useSearchParams} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
 
 const Subject = ({subjects, setSubjects, selectedSubject, setSelectedSubject}) => {
 
     const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
 
     const [pageNumber, setPageNumber] = useState(1);
     const [pageSize, setPageSize] = useState(5);
@@ -18,11 +19,25 @@ const Subject = ({subjects, setSubjects, selectedSubject, setSelectedSubject}) =
         console.log(searchParams.get('course'));
         const getSubjects = () => {
             return axios
-                .get('/subjects', {params: {pageNumber: pageNumber - 1, pageSize: pageSize, course: parseInt(searchParams.get('course'))}})
+                .get('/subjects', {
+                    params:
+                        {
+                            pageNumber: pageNumber - 1,
+                            pageSize: pageSize,
+                            course: parseInt(searchParams.get('course'))
+                        },
+                    headers: {
+                        "Access-Control-Allow-Origin": "*"
+                    },
+                    withCredentials: true
+                })
                 .then((response) => {
                     return response.data;
                 })
                 .catch((error) => {
+                    if (error.response.status === 403) {
+                        navigate('/');
+                    }
                     return error;
                 });
         }

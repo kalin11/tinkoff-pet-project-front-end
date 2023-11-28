@@ -13,11 +13,19 @@ const Course = ({courses, selectedCourse, handleSelectCourse, setCourses}) => {
 
         const getCourses = () => {
             return axios
-                .get('/courses')
+                .get('/courses', {
+                    headers: {
+                        "Access-Control-Allow-Origin": "*"
+                    },
+                    withCredentials: true
+                })
                 .then((response) => {
                     return response.data;
                 })
                 .catch((error) => {
+                    if (error.response.status === 403) {
+                        navigate('/');
+                    }
                     return error;
                 });
         }

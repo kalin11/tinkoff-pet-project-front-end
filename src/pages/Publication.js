@@ -1,4 +1,4 @@
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from "../config/axios";
 import Header from "../components/headers/Header";
@@ -24,21 +24,41 @@ const Publication = () => {
     const [open, setOpen] = useState(false);
     const [commentContent, setCommentContent] = useState('');
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         const getPublication = () => {
             return axios
-                .get('/publications/' + parseInt(id))
+                .get('/publications/' + parseInt(id), {
+                    headers: {
+                        "Access-Control-Allow-Origin": "*"
+                    },
+                    withCredentials: true
+                })
                 .then((response) => {
                     return response.data;
                 })
                 .catch((error) => {
+                    if (error.response.status === 403) {
+                        navigate('/');
+                    }
                     return error;
                 })
         }
 
         const getComments = () => {
             return axios
-                .get('/comments', {params: {pageNumber: pageNumber - 1, pageSize: pageSize, publicationId: id}})
+                .get('/comments', {
+                    params: {
+                        pageNumber: pageNumber - 1,
+                        pageSize: pageSize,
+                        publicationId: id
+                    },
+                    headers: {
+                        "Access-Control-Allow-Origin": "*"
+                    },
+                    withCredentials: true
+                })
                 .then((response) => {
                     return response.data;
                 })
@@ -57,10 +77,12 @@ const Publication = () => {
                 let id = comments.content[i].id;
                 let content = comments.content[i].content;
                 let created_at = comments.content[i].created_at;
+                let username = comments.content[i].full_name;
 
                 list.push(
                     {
                         id: id,
+                        username: username,
                         content: content,
                         created_at: created_at
                     }
@@ -98,7 +120,18 @@ const Publication = () => {
         }
         else {
             return axios
-                .post('/comments', {content: commentContent, publication_id: parseInt(id)})
+                .post('/comments',
+                    {
+                        content: commentContent,
+                        publication_id: parseInt(id)
+                    },
+                    {
+                        headers: {
+                            "Access-Control-Allow-Origin": "*"
+                        },
+                        withCredentials: true
+                    }
+                    )
                 .then((response) => {
                     return response.data;
                 })
@@ -110,7 +143,15 @@ const Publication = () => {
 
     const downloadFile = (file) => {
         return axios
-            .get('/files/' + file.file_name_in_directory, {responseType: 'blob'})
+            .get('/files/' + file.file_name_in_directory,
+                {
+                    responseType: 'blob',
+                    headers: {
+                        "Access-Control-Allow-Origin": "*"
+                    },
+                    withCredentials: true
+                }
+                )
             .then((response) => {
                 const url = URL.createObjectURL(response.data);
                 const a = document.createElement("a");
@@ -169,7 +210,10 @@ const Publication = () => {
                             {
                                 comments.map((comment) => {
                                     return (
-                                        <CommentItem key={comment.id} comment={comment.content} createdDate={comment.created_at}
+                                        <CommentItem key={comment.id}
+                                                     comment={comment.content}
+                                                     createdDate={comment.created_at}
+                                                     username={comment.username}
                                                      commentId={comment.id}/>
                                     )
                                 })

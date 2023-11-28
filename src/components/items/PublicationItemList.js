@@ -20,6 +20,7 @@ const PublicationItemList = ({publications, selectedPublication, setSelectedPubl
                                          publicationId={publication.id}
                                          publicationTitle={publication.title}
                                          handleClick={handlePublication}
+                                         authorName={publication.authorName}
 
                         />
                     );
