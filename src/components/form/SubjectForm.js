@@ -16,11 +16,23 @@ const SubjectForm = ({ courseNumber }) => {
         }
         else {
             return axios
-                .post('/subjects', {course_number: courseNumber,name: subjectTitle})
+                .post('/subjects',
+                    {
+                        course_number: courseNumber,
+                        name: subjectTitle
+                    },
+                    {
+                        headers: {
+                            "Access-Control-Allow-Origin": "*"
+                        },
+                        withCredentials: true
+                    }
+                    )
                 .then((response) => {
                     return response.data;
                 })
                 .catch((error) => {
+                    console.log(error);
                     return error;
                 });
         }

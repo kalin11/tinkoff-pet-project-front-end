@@ -3,7 +3,7 @@ const CommentItem = ( {username, createdDate, comment, commentId} ) => {
         <div className="bg-white rounded mt-3 mb-3" key={commentId}>
             <div>
                 <div className="flex">
-                    kalin
+                    {username}
                 </div>
                 <div className="flex mt-3 mb-3">
                     {createdDate}

@@ -57,12 +57,19 @@ const Publications = ({subjectTopicId, publications, setPublications, selectedPu
             }
 
             return axios
-                .post('/publications', formData)
+                .post('/publications', formData, {
+                    headers: {
+                        "Access-Control-Allow-Origin": "*"
+                    },
+                    withCredentials: true
+                })
                 .then((response) => {
                     return response.data;
                 })
                 .catch((error) => {
-                    console.log(error.response.data);
+                    if (error.response.status === 403) {
+                        navigate('/');
+                    }
                     return error.response.data;
                 });
         }
@@ -108,12 +115,19 @@ const Publications = ({subjectTopicId, publications, setPublications, selectedPu
                         subjectTopicId: subjectTopicId,
                         pageNumber: pageNumber - 1,
                         pageSize: pageSize
-                    }
+                    },
+                    headers: {
+                        "Access-Control-Allow-Origin": "*"
+                    },
+                    withCredentials: true
                 })
                 .then((response) => {
                     return response.data;
                 })
                 .catch((error) => {
+                    if (error.response.status === 403) {
+                        navigate('/');
+                    }
                     return error;
                 })
         }
@@ -126,10 +140,12 @@ const Publications = ({subjectTopicId, publications, setPublications, selectedPu
             let list = [];
             for (let i = 0; i < publications.content.length; i++) {
                 console.log(publications.content[i]);
+                let authorName = publications.content[i].full_name;
                 let id = publications.content[i].id;
                 let description = publications.content[i].title;
                 list.push(
                     {
+                        authorName: authorName,
                         id: id,
                         title: description
                     }

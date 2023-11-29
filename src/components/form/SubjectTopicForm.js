@@ -18,7 +18,19 @@ const SubjectForm = ({topics, selectedTopic, setSelectedTopic, course, subjectId
         console.log(event.target);
 
         return axios
-            .post('/subject-topics', {course_number: course, subject_id: subjectId, topic_id: selectedTopic})
+            .post('/subject-topics',
+                {
+                    course_number: course,
+                    subject_id: subjectId,
+                    topic_id: selectedTopic
+                },
+                {
+                    headers: {
+                        "Access-Control-Allow-Origin": "*"
+                    },
+                    withCredentials: true
+                }
+                )
             .then((response) => {
                 return response.data;
             })

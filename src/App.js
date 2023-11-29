@@ -1,4 +1,4 @@
-import {BrowserRouter, Link, Route, Routes} from 'react-router-dom';
+import {BrowserRouter, Route, Routes} from 'react-router-dom';
 
 // pages
 import About from './pages/About';
@@ -9,6 +9,7 @@ import Subject from "./pages/Subject";
 import SubjectTopic from "./pages/SubjectTopic";
 import Publications from "./pages/Publications";
 import Publication from "./pages/Publication";
+import LoginForm from "./components/form/LoginForm";
 
 
 const App = () => {
@@ -53,17 +54,9 @@ const App = () => {
             <BrowserRouter>
                 <Routes>
                     <Route exact path="/"
-                           element={<div>
-                               <div className="flex justify-center mt-[300px] font-black text-2xl">
-                                   Привет, это начальная страница. Она пустая, потому что подкрути сюда авторизацию
-                               </div>
-                               <div>
-                                   <Link to="/coures" className="flex justify-center text-blue-400">Нажми на меня, чтобы перейти к приложению</Link>
-                               </div>
-                           </div>
-                    }
+                        element={<LoginForm/>}
                     />
-                    <Route exact path="/coures"
+                    <Route exact path="/courses"
                            element={<Course courses={courses} selectedCourse={selectedCourse}
                                             handleSelectCourse={handleSelectCourse} setCourses={setCourses}/>}
                     />
