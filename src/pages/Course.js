@@ -58,7 +58,7 @@ const Course = ({courses, selectedCourse, handleSelectCourse, setCourses}) => {
 
     return (
         <div className="">
-            <Header/>
+            <Header />
             <div className="mt-[200px]">
                 <Selector courses={courses} selectedCourse={selectedCourse} handleSelectCourse={handleSelectCourse}/>
                 <Button text="Показать предметы" handleButton={handleButton}/>

@@ -113,11 +113,15 @@ const SubjectTopic = ({
                                   setSubjectTopicId={setSubjectTopicId}
                                   selectedSubjectTopicId={subjectTopicId}
                 />
-                <SubjectTopicForm topics={allTopics}
-                                  selectedTopic={topicType}
-                                  setSelectedTopic={setSelectedTopicType}
-                                  course={course}
-                                  subjectId={id}/>
+                {
+                    (sessionStorage.getItem('user') !== null) &&
+                    <SubjectTopicForm topics={allTopics}
+                                      selectedTopic={topicType}
+                                      setSelectedTopic={setSelectedTopicType}
+                                      course={course}
+                                      subjectId={id}/>
+                }
+
             </div>
         </div>
     )

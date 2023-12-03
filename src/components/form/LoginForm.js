@@ -37,11 +37,12 @@ const LoginForm = () => {
                     withCredentials: true
                 })
                     .then((response) => {
+                        sessionStorage.setItem('user', JSON.stringify(response.data));
                         navigate('/courses');
                         return response.data;
                     })
                     .catch((error) => {
-                        console.log("йоу, чет фигня какая-то")
+                        console.log(error.response.data.message);
                         return error;
                     })
             }
@@ -72,20 +73,22 @@ const LoginForm = () => {
                 alert("Пароли не совпадают");
             }
             else {
-                return axios.post('/auth/register', {full_name: login, email: email, password: password}, {
+                return axios.post('/auth/register', {nickname: login, email: email, password: password}, {
                     headers: {
                         "Access-Control-Allow-Origin": "*"
                     },
                     withCredentials: true
                 })
                     .then((response) => {
+                        sessionStorage.setItem('user', JSON.stringify(response.data));
                         navigate('/courses');
                         return response.data;
                     })
                     .catch((error) => {
-                        console.log("йоу, чет фигня какая-то")
+                        console.log(error.response.data.message);
                         return error;
                     })
+
             }
         }
     }
@@ -99,6 +102,10 @@ const LoginForm = () => {
         setShowLoginInput(true);
         setShowSecondPassword(true);
         setRegistrationMode(true);
+    }
+
+    const goToApp = () => {
+        navigate('/courses');
     }
 
     const goToLogin = (e) => {
@@ -145,6 +152,13 @@ const LoginForm = () => {
 
                     </label>
                 </form>
+                <div className="flex justify-center mt-5">
+                    <a href=""
+                       className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                       onClick={goToApp}>
+                        Продолжить как гость
+                    </a>
+                </div>
             </div>
         </div>
     )
