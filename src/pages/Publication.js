@@ -24,6 +24,8 @@ const Publication = () => {
     const [open, setOpen] = useState(false);
     const [commentContent, setCommentContent] = useState('');
 
+    const [anonymous, setAnonymous] = useState(false);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -77,7 +79,7 @@ const Publication = () => {
                 let id = comments.content[i].id;
                 let content = comments.content[i].content;
                 let created_at = comments.content[i].created_at;
-                let username = comments.content[i].full_name;
+                let username = comments.content[i].nickname;
 
                 list.push(
                     {
@@ -112,6 +114,10 @@ const Publication = () => {
 
     }, [pageNumber, pageSize, open]);
 
+    const handleAnonymous = () => {
+        setAnonymous(!anonymous);
+    }
+
     const handleNewComment = () => {
         setOpen(false);
         if (commentContent === '') {
@@ -123,7 +129,8 @@ const Publication = () => {
                 .post('/comments',
                     {
                         content: commentContent,
-                        publication_id: parseInt(id)
+                        publication_id: parseInt(id),
+                        is_anonymous: anonymous
                     },
                     {
                         headers: {
@@ -241,12 +248,19 @@ const Publication = () => {
                                         <textarea className="mb-3 mt-3 rounded bg-gray-200 w-[100%] justify-center"
                                                   value={commentContent} placeholder="Введите описание"
                                                   onChange={e => setCommentContent(e.target.value)}/>
+                                        <div className="flex justify-center">
+                                            <input type="checkbox" id="anonymous" className="mr-2" onChange={handleAnonymous}/>
+                                            <label for="anonymous">Анонимно</label>
+                                        </div>
                                         <Button text="Создать" handleButton={handleNewComment}/>
                                     </div>
                                 </div>
                             </Modal>
 
-                            <Button text="Создать новый комментарий" handleButton={handleButton}/>
+                            {
+                                (sessionStorage.getItem('user') !== null) && <Button text="Создать новый комментарий" handleButton={handleButton}/>
+                            }
+
                         </div>
                     </div>
                 </div>

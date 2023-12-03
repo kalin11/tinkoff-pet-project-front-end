@@ -12,7 +12,7 @@ const PublicationItemList = ({publications, selectedPublication, setSelectedPubl
     }
 
     return (
-        <div className="min-w-[900px] max-w-[80vw] mx-auto justify-center">
+        <div className="min-w-[700px] max-w-[80vw] mx-auto justify-center">
             {
                 publications.map((publication) => {
                     return (

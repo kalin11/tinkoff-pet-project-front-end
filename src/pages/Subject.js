@@ -15,6 +15,17 @@ const Subject = ({subjects, setSubjects, selectedSubject, setSelectedSubject}) =
     const [pageSize, setPageSize] = useState(5);
     const [totalPages, setTotalPages] = useState(1);
 
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    useEffect(() => {
+        if (JSON.parse(sessionStorage.getItem('user')) === null) {
+            setIsAdmin(false);
+        }
+        else if (JSON.parse(sessionStorage.getItem('user')).role === 'Администратор') {
+            setIsAdmin(true);
+        }
+    }, []);
+
     useEffect(() => {
         console.log(searchParams.get('course'));
         const getSubjects = () => {
@@ -95,7 +106,10 @@ const Subject = ({subjects, setSubjects, selectedSubject, setSelectedSubject}) =
                     />
                 }
 
-                <SubjectForm courseNumber={searchParams.get('course')}/>
+                {
+                    isAdmin &&
+                    <SubjectForm courseNumber={searchParams.get('course')}/>
+                }
 
             </div>
         </div>

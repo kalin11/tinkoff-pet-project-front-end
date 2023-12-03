@@ -16,3 +16,6 @@ const Button = ({text, handleButton}) => {
 }
 
 export default Button;
+
+// (App) -> (Button) -> (Click)
+//

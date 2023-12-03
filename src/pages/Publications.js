@@ -140,7 +140,7 @@ const Publications = ({subjectTopicId, publications, setPublications, selectedPu
             let list = [];
             for (let i = 0; i < publications.content.length; i++) {
                 console.log(publications.content[i]);
-                let authorName = publications.content[i].full_name;
+                let authorName = publications.content[i].nickname;
                 let id = publications.content[i].id;
                 let description = publications.content[i].title;
                 list.push(
@@ -192,7 +192,10 @@ const Publications = ({subjectTopicId, publications, setPublications, selectedPu
                     </div>
                 </Modal>
 
-                <Button text="Создать новую публикацию" handleButton={handleButton}/>
+                {
+                    (sessionStorage.getItem('user') !== null) &&
+                    <Button text="Создать новую публикацию" handleButton={handleButton}/>
+                }
 
 
                 {!!totalPages &&

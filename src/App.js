@@ -10,6 +10,7 @@ import SubjectTopic from "./pages/SubjectTopic";
 import Publications from "./pages/Publications";
 import Publication from "./pages/Publication";
 import LoginForm from "./components/form/LoginForm";
+import Profile from "./pages/Profile"
 
 
 const App = () => {
@@ -28,6 +29,8 @@ const App = () => {
 
     const [publications, setPublications] = useState([]);
     const [selectedPublication, setSelectedPublication] = useState();
+
+    const [currentUserEmail, setCurrentUserEmail] = useState();
 
     const handleSelectedPublication = (value) => {
         setSelectedPublication(parseInt(value));
@@ -54,7 +57,7 @@ const App = () => {
             <BrowserRouter>
                 <Routes>
                     <Route exact path="/"
-                        element={<LoginForm/>}
+                           element={<LoginForm/>}
                     />
                     <Route exact path="/courses"
                            element={<Course courses={courses} selectedCourse={selectedCourse}
@@ -88,6 +91,9 @@ const App = () => {
                     />
                     <Route path="/publications/:id"
                            element={<Publication/>}
+                    />
+                    <Route path="/users/:nickname"
+                           element={<Profile/>}
                     />
                     <Route exact path="/about" element={<About/>}
                     />
