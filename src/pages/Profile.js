@@ -40,6 +40,9 @@ const Profile = () => {
 
     const [isAdmin, setIsAdmin] = useState(false);
 
+    const [chronos, setChronos] = useState([]);
+    const [selectedChrono, setSelectedChrono] = useState(15);
+
     const ownPersonProfile = () => {
         if (sessionStorage.getItem('user') === null) {
             return false;
@@ -60,6 +63,10 @@ const Profile = () => {
             setIsAdmin(false);
         } else if (JSON.parse(sessionStorage.getItem('user')).role === 'Администратор') {
             setIsAdmin(true);
+        }
+
+        for (let i = 0; i < 59; i++) {
+            chronos.push(i + 1);
         }
 
         const getProfileInfo = () => {
@@ -206,6 +213,10 @@ const Profile = () => {
         setEditMode(true);
     }
 
+    const handleChrono = (event) => {
+        setSelectedChrono(parseInt(event.target.value));
+    }
+
     const updateInfo = () => {
         setEditMode(false);
         const formData = new FormData();
@@ -265,6 +276,22 @@ const Profile = () => {
 
     }
 
+    const setNewJobTime = () => {
+        return axios
+            .post('/scheduler', {minutes: selectedChrono}, {
+                headers: {
+                    "Access-Control-Allow-Origin": "*"
+                },
+                withCredentials: true
+            })
+            .then((response) => {
+                setSelectedChrono(response.data.minutes);
+            })
+            .catch((error) => {
+                return error.response.data;
+            })
+    }
+
     const banProfile = () => {
 
         const url = '/accounts/' + profileId;
@@ -313,8 +340,28 @@ const Profile = () => {
                 </div>
                 <div className="flex-сol bg-gray-300 rounded-2xl w-[100%] ml-2 mr-2">
                     <div className="ml-3">
-                        <div className="flex h-[5vh] text-2xl">
-                            Данные профиля
+                        <div className="flex">
+                            <div className="flex h-[5vh] text-2xl">
+                                Данные профиля
+                            </div>
+                            <div className="flex ml-auto mr-3 ">
+                                <div className="mt-3 mr-1">
+                                    Установить частоту чистки комментариев (в минутах)
+                                </div>
+
+                                <select value={selectedChrono} onChange={handleChrono} className="rounded-2xl w-[7%] h-[70%] mt-2 mr-3">
+                                    {
+                                        chronos.map((period) => {
+                                            return (
+                                                <option key="period" value={period}>
+                                                    {period}
+                                                </option>
+                                            )
+                                        })
+                                    }
+                                </select>
+                                <Button text="Установить" handleButton={setNewJobTime}/>
+                            </div>
                         </div>
 
                         <ProfileItem title="Фамилия"
@@ -336,15 +383,15 @@ const Profile = () => {
                         />
 
                         <ProfileItem title="Почта"
-                                     // editMode={editMode}
+                            // editMode={editMode}
                                      content={email}
-                                     // setNewValue={setEmail}
+                            // setNewValue={setEmail}
                         />
 
                         <ProfileItem title="Никнейм"
-                                     // editMode={editMode}
+                            // editMode={editMode}
                                      content={updatingNickname}
-                                     // setNewValue={setUpdatingNickname}
+                            // setNewValue={setUpdatingNickname}
                                      onClick={goToProfile}
                         />
 
