@@ -2,15 +2,21 @@ import React from "react";
 import axios from "../../config/axios";
 import {useNavigate} from "react-router-dom";
 
-const Header = ( ) => {
+const Header = () => {
 
     const navigate = useNavigate();
 
     const logout = () => {
         return axios
-            .post('/auth/logout')
+            .post('/auth/logout', null, {
+                headers: {
+                    "Access-Control-Allow-Origin": "*"
+                },
+                withCredentials: true
+            })
             .then((response) => {
-                sessionStorage.clear();
+                sessionStorage.clear(); /*;*/
+                ;
                 navigate('/');
                 return response.data;
             })

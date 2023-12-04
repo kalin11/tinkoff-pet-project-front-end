@@ -42,7 +42,24 @@ const Publication = () => {
                 })
                 .catch((error) => {
                     if (error.response.status === 403) {
-                        navigate('/');
+                        if (error.response.message === "У вас недостаточно прав для выполнения данного действия") {
+                            console.log(error.response);
+                        } else return axios
+                            .post('/auth/logout', null, {
+                                headers: {
+                                    "Access-Control-Allow-Origin": "*"
+                                },
+                                withCredentials: true
+                            })
+                            .then((response) => {
+                                sessionStorage.clear();
+                                ;
+                                navigate('/');
+                                return response.data;
+                            })
+                            .catch((error) => {
+                                return error;
+                            })
                     }
                     return error;
                 })
@@ -65,7 +82,24 @@ const Publication = () => {
                     return response.data;
                 })
                 .catch((error) => {
-                    return error;
+                    if (error.response.message === "У вас недостаточно прав для выполнения данного действия") {
+                        console.log(error.response);
+                    } else return axios
+                        .post('/auth/logout', null, {
+                            headers: {
+                                "Access-Control-Allow-Origin": "*"
+                            },
+                            withCredentials: true
+                        })
+                        .then((response) => {
+                            sessionStorage.clear();
+                            ;
+                            navigate('/');
+                            return response.data;
+                        })
+                        .catch((error) => {
+                            return error;
+                        })
                 })
         }
 
@@ -123,8 +157,7 @@ const Publication = () => {
         if (commentContent === '') {
             alert("Комментарий не может быть пустым");
             return false;
-        }
-        else {
+        } else {
             return axios
                 .post('/comments',
                     {
@@ -138,12 +171,29 @@ const Publication = () => {
                         },
                         withCredentials: true
                     }
-                    )
+                )
                 .then((response) => {
                     return response.data;
                 })
                 .catch((error) => {
-                    return error;
+                    if (error.response.message === "У вас недостаточно прав для выполнения данного действия") {
+                        console.log(error.response);
+                    } else return axios
+                        .post('/auth/logout', null, {
+                            headers: {
+                                "Access-Control-Allow-Origin": "*"
+                            },
+                            withCredentials: true
+                        })
+                        .then((response) => {
+                            sessionStorage.clear();
+                            ;
+                            navigate('/');
+                            return response.data;
+                        })
+                        .catch((error) => {
+                            return error;
+                        })
                 })
         }
     }
@@ -158,7 +208,7 @@ const Publication = () => {
                     },
                     withCredentials: true
                 }
-                )
+            )
             .then((response) => {
                 const url = URL.createObjectURL(response.data);
                 const a = document.createElement("a");
@@ -171,7 +221,24 @@ const Publication = () => {
                 URL.revokeObjectURL(url);
             })
             .catch((error) => {
-                return error;
+                if (error.response.message === "У вас недостаточно прав для выполнения данного действия") {
+                    console.log(error.response);
+                } else return axios
+                    .post('/auth/logout', null, {
+                        headers: {
+                            "Access-Control-Allow-Origin": "*"
+                        },
+                        withCredentials: true
+                    })
+                    .then((response) => {
+                        sessionStorage.clear();
+                        ;
+                        navigate('/');
+                        return response.data;
+                    })
+                    .catch((error) => {
+                        return error;
+                    })
             })
     }
 
@@ -249,7 +316,8 @@ const Publication = () => {
                                                   value={commentContent} placeholder="Введите описание"
                                                   onChange={e => setCommentContent(e.target.value)}/>
                                         <div className="flex justify-center">
-                                            <input type="checkbox" id="anonymous" className="mr-2" onChange={handleAnonymous}/>
+                                            <input type="checkbox" id="anonymous" className="mr-2"
+                                                   onChange={handleAnonymous}/>
                                             <label for="anonymous">Анонимно</label>
                                         </div>
                                         <Button text="Создать" handleButton={handleNewComment}/>
@@ -258,7 +326,8 @@ const Publication = () => {
                             </Modal>
 
                             {
-                                (sessionStorage.getItem('user') !== null) && <Button text="Создать новый комментарий" handleButton={handleButton}/>
+                                (sessionStorage.getItem('user') !== null) &&
+                                <Button text="Создать новый комментарий" handleButton={handleButton}/>
                             }
 
                         </div>

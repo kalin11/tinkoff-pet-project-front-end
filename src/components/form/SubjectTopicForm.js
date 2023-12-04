@@ -2,10 +2,13 @@ import {useState} from "react";
 import axios from "../../config/axios";
 import TopicSelector from "../selects/TopicSelector";
 import Button from "../buttons/Button";
+import {useNavigate} from "react-router-dom";
 
 const SubjectForm = ({topics, selectedTopic, setSelectedTopic, course, subjectId}) => {
 
     const [topicTitle, setTopicTitle] = useState('');
+
+    const navigate = useNavigate();
 
 
     const handleTopicTitle = (event) => {
@@ -30,11 +33,31 @@ const SubjectForm = ({topics, selectedTopic, setSelectedTopic, course, subjectId
                     },
                     withCredentials: true
                 }
-                )
+            )
             .then((response) => {
                 return response.data;
             })
             .catch((error) => {
+                if (error.response.status === 403) {
+                    if (error.response.message === "У вас недостаточно прав для выполнения данного действия") {
+                        console.log(error.response);
+                    } else return axios
+                        .post('/auth/logout', null, {
+                            headers: {
+                                "Access-Control-Allow-Origin": "*"
+                            },
+                            withCredentials: true
+                        })
+                        .then((response) => {
+                            sessionStorage.clear();
+                            ;
+                            navigate('/');
+                            return response.data;
+                        })
+                        .catch((error) => {
+                            return error;
+                        })
+                }
                 console.log(error.response.data);
                 return error.response.data;
             });

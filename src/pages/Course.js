@@ -24,7 +24,23 @@ const Course = ({courses, selectedCourse, handleSelectCourse, setCourses}) => {
                 })
                 .catch((error) => {
                     if (error.response.status === 403) {
-                        navigate('/');
+                        return axios
+                            .post('/auth/logout', null, {
+                                headers: {
+                                    "Access-Control-Allow-Origin": "*"
+                                },
+                                withCredentials: true
+                            })
+                            .then((response) => {
+                                sessionStorage.clear();
+                                ;
+                                ;
+                                navigate('/');
+                                return response.data;
+                            })
+                            .catch((error) => {
+                                return error;
+                            })
                     }
                     return error;
                 });
@@ -58,7 +74,7 @@ const Course = ({courses, selectedCourse, handleSelectCourse, setCourses}) => {
 
     return (
         <div className="">
-            <Header />
+            <Header/>
             <div className="mt-[200px]">
                 <Selector courses={courses} selectedCourse={selectedCourse} handleSelectCourse={handleSelectCourse}/>
                 <Button text="Показать предметы" handleButton={handleButton}/>

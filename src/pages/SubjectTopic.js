@@ -24,6 +24,8 @@ const SubjectTopic = ({
     const [totalPages, setTotalPages] = useState(10);
     const navigate = useNavigate();
 
+    const [isBanned, setIsBanned] = useState(false);
+
     useEffect(() => {
 
         const getTopics = () => {
@@ -47,7 +49,25 @@ const SubjectTopic = ({
                 })
                 .catch((error) => {
                     if (error.response.status === 403) {
-                        navigate('/');
+                        if (error.response.message === "У вас недостаточно прав для выполнения данного действия") {
+                            console.log(error.response);
+                        } else return axios
+                            .post('/auth/logout', null, {
+                                headers: {
+                                    "Access-Control-Allow-Origin": "*"
+                                },
+                                withCredentials: true
+                            })
+                            .then((response) => {
+
+                                ;
+                                setIsBanned(true);
+                                navigate('/');
+                                return response.data;
+                            })
+                            .catch((error) => {
+                                return error;
+                            })
                     }
                     return error;
                 })
@@ -67,7 +87,25 @@ const SubjectTopic = ({
                 })
                 .catch((error) => {
                     if (error.response.status === 403) {
-                        navigate('/');
+                        if (error.response.message === "У вас недостаточно прав для выполнения данного действия") {
+                            console.log(error.response);
+                        } else return axios
+                            .post('/auth/logout', null, {
+                                headers: {
+                                    "Access-Control-Allow-Origin": "*"
+                                },
+                                withCredentials: true
+                            })
+                            .then((response) => {
+                                sessionStorage.clear();
+                                ;
+                                setIsBanned(true);
+                                navigate('/');
+                                return response.data;
+                            })
+                            .catch((error) => {
+                                return error;
+                            })
                     }
                     return error;
                 })
@@ -107,12 +145,14 @@ const SubjectTopic = ({
         <div>
             <Header/>
             <div className="mt-[200px]">
-                <SubjectTopicList topics={topics}
-                                  selectedTopic={topicType}
-                                  setSelectedTopic={setSelectedTopicType}
-                                  setSubjectTopicId={setSubjectTopicId}
-                                  selectedSubjectTopicId={subjectTopicId}
-                />
+                {!isBanned &&
+                    <SubjectTopicList topics={topics}
+                                      selectedTopic={topicType}
+                                      setSelectedTopic={setSelectedTopicType}
+                                      setSubjectTopicId={setSubjectTopicId}
+                                      selectedSubjectTopicId={subjectTopicId}
+                    />
+                }
                 {
                     (sessionStorage.getItem('user') !== null) &&
                     <SubjectTopicForm topics={allTopics}
