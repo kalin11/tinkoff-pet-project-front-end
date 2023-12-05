@@ -59,8 +59,6 @@ const SubjectTopic = ({
                                 withCredentials: true
                             })
                             .then((response) => {
-
-                                ;
                                 setIsBanned(true);
                                 navigate('/');
                                 return response.data;
@@ -98,7 +96,6 @@ const SubjectTopic = ({
                             })
                             .then((response) => {
                                 sessionStorage.clear();
-                                ;
                                 setIsBanned(true);
                                 navigate('/');
                                 return response.data;

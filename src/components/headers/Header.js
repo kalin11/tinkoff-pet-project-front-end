@@ -15,8 +15,7 @@ const Header = () => {
                 withCredentials: true
             })
             .then((response) => {
-                sessionStorage.clear(); /*;*/
-                ;
+                sessionStorage.clear();
                 navigate('/');
                 return response.data;
             })

@@ -137,7 +137,6 @@ const Profile = () => {
                             })
                             .then((response) => {
                                 sessionStorage.clear();
-                                ;
                                 navigate('/');
                                 return response.data;
                             })
@@ -210,7 +209,6 @@ const Profile = () => {
                                 })
                                 .then((response) => {
                                     sessionStorage.clear();
-                                    ;
                                     navigate('/');
                                     return response.data;
                                 })

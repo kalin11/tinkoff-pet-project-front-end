@@ -79,7 +79,6 @@ const Publications = ({subjectTopicId, publications, setPublications, selectedPu
                             })
                             .then((response) => {
                                 sessionStorage.clear();
-                                ;
                                 navigate('/');
                                 return response.data;
                             })
