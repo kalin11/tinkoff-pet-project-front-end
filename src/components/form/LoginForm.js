@@ -34,7 +34,7 @@ const LoginForm = () => {
                 })
                     .then((response) => {
                         sessionStorage.setItem('user', JSON.stringify(response.data));
-                        navigate('/courses');
+                        navigate('/feed');
                         return response.data;
                     })
                     .catch((error) => {
@@ -71,7 +71,7 @@ const LoginForm = () => {
                 })
                     .then((response) => {
                         sessionStorage.setItem('user', JSON.stringify(response.data));
-                        navigate('/courses');
+                        navigate('/feed');
                         return response.data;
                     })
                     .catch((error) => {
@@ -95,7 +95,7 @@ const LoginForm = () => {
     }
 
     const goToApp = () => {
-        navigate('/courses');
+        navigate('/feed');
     }
 
     const goToLogin = (e) => {

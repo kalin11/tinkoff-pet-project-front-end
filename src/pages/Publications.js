@@ -170,7 +170,7 @@ const Publications = ({subjectTopicId, publications, setPublications, selectedPu
         const getData = async () => {
             let publications = await getPublications();
 
-            setTotalPages(publications.totalPages);
+            setTotalPages(publications.total_pages);
 
             let list = [];
             for (let i = 0; i < publications.content.length; i++) {
@@ -233,26 +233,26 @@ const Publications = ({subjectTopicId, publications, setPublications, selectedPu
                 }
 
 
-                {!!totalPages &&
-                    <Pagination
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            marginX: 'auto',
-                        }}
-                        style={{
-                            width: "100%",
-                            position: "absolute",
-                            bottom: "5px",
-                        }}
-                        color="primary"
-                        count={totalPages}
-                        page={pageNumber}
-                        onChange={(_, num) => {
-                            setPageNumber(num);
-                        }}
-                    />
-                }
+
+
+                <Pagination
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        marginX: 'auto',
+                    }}
+                    style={{
+                        width: "100%",
+                        position: "absolute",
+                        bottom: "5px",
+                    }}
+                    color="primary"
+                    count={totalPages}
+                    page={pageNumber}
+                    onChange={(_, num) => {
+                        setPageNumber(num);
+                    }}
+                />
 
             </div>
 
