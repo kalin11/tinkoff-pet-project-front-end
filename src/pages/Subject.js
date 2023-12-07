@@ -20,8 +20,7 @@ const Subject = ({subjects, setSubjects, selectedSubject, setSelectedSubject}) =
     useEffect(() => {
         if (JSON.parse(sessionStorage.getItem('user')) === null) {
             setIsAdmin(false);
-        }
-        else if (JSON.parse(sessionStorage.getItem('user')).role === 'Администратор') {
+        } else if (JSON.parse(sessionStorage.getItem('user')).role === 'Администратор') {
             setIsAdmin(true);
         }
     }, []);
@@ -47,7 +46,24 @@ const Subject = ({subjects, setSubjects, selectedSubject, setSelectedSubject}) =
                 })
                 .catch((error) => {
                     if (error.response.status === 403) {
-                        navigate('/');
+                        if (error.response.message === "У вас недостаточно прав для выполнения данного действия") {
+                            console.log(error.response);
+                        } else return axios
+                            .post('/auth/logout', null, {
+                                headers: {
+                                    "Access-Control-Allow-Origin": "*"
+                                },
+                                withCredentials: true
+                            })
+                            .then((response) => {
+                                sessionStorage.clear();
+                                ;
+                                navigate('/');
+                                return response.data;
+                            })
+                            .catch((error) => {
+                                return error;
+                            })
                     }
                     return error;
                 });

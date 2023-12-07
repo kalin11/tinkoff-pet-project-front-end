@@ -68,8 +68,26 @@ const Publications = ({subjectTopicId, publications, setPublications, selectedPu
                 })
                 .catch((error) => {
                     if (error.response.status === 403) {
-                        navigate('/');
+                        if (error.response.message === "У вас недостаточно прав для выполнения данного действия") {
+                            console.log("Недостаточно прав");
+                        } else return axios
+                            .post('/auth/logout', null, {
+                                headers: {
+                                    "Access-Control-Allow-Origin": "*"
+                                },
+                                withCredentials: true
+                            })
+                            .then((response) => {
+                                sessionStorage.clear();
+                                navigate('/');
+                                return response.data;
+                            })
+                            .catch((error) => {
+                                return error;
+                            })
+
                     }
+                    console.log(error.response.data);
                     return error.response.data;
                 });
         }
@@ -126,7 +144,24 @@ const Publications = ({subjectTopicId, publications, setPublications, selectedPu
                 })
                 .catch((error) => {
                     if (error.response.status === 403) {
-                        navigate('/');
+                        if (error.response.message === "У вас недостаточно прав для выполнения данного действия") {
+                            console.log(error.response);
+                        } else return axios
+                            .post('/auth/logout', null, {
+                                headers: {
+                                    "Access-Control-Allow-Origin": "*"
+                                },
+                                withCredentials: true
+                            })
+                            .then((response) => {
+                                sessionStorage.clear();
+                                ;
+                                navigate('/');
+                                return response.data;
+                            })
+                            .catch((error) => {
+                                return error;
+                            })
                     }
                     return error;
                 })

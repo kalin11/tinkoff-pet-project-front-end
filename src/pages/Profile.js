@@ -80,9 +80,15 @@ const Profile = () => {
                 .then((response) => {
                     if (response.data.is_banned === true && ownPersonProfile()) {
                         axios
-                            .post('/auth/logout')
+                            .post('/auth/logout', null, {
+                                headers: {
+                                    "Access-Control-Allow-Origin": "*"
+                                },
+                                withCredentials: true
+                            })
                             .then((response) => {
                                 sessionStorage.clear();
+                                ;
                                 navigate('/');
                             })
                             .catch((error) => {
@@ -119,7 +125,26 @@ const Profile = () => {
                     return response.data;
                 })
                 .catch((error) => {
-                    return error.response.data;
+                    if (error.response.status === 403) {
+                        if (error.response.message === "У вас недостаточно прав для выполнения данного действия") {
+                            console.log(error.response);
+                        } else return axios
+                            .post('/auth/logout', null, {
+                                headers: {
+                                    "Access-Control-Allow-Origin": "*"
+                                },
+                                withCredentials: true
+                            })
+                            .then((response) => {
+                                sessionStorage.clear();
+                                navigate('/');
+                                return response.data;
+                            })
+                            .catch((error) => {
+                                return error;
+                            })
+                    }
+                    return error;
                 })
         }
 
@@ -129,9 +154,9 @@ const Profile = () => {
             console.log(ownPersonProfile());
             setIsBanned(info.is_banned);
             setProfileId(info.id);
-            setName(info.first_name === null ? notDefined : info.first_name);
-            setLastName(info.last_name === null ? notDefined : info.last_name);
-            setMiddleName(info.middle_name === null ? notDefined : info.middle_name);
+            setName(info.first_name === null ? '' : info.first_name);
+            setLastName(info.last_name === null ? '' : info.last_name);
+            setMiddleName(info.middle_name === null ? '' : info.middle_name);
             setUpdatingNickname(info.nickname);
             setEmail(info.email);
             setBirthdate(info.birth_date);
@@ -172,7 +197,26 @@ const Profile = () => {
                         return "http://localhost:8080/v1/photos/" + photo_name_in_directory;
                     })
                     .catch((error) => {
-                        return error.response.data;
+                        if (error.response.status === 403) {
+                            if (error.response.message === "У вас недостаточно прав для выполнения данного действия") {
+                                console.log(error.response);
+                            } else return axios
+                                .post('/auth/logout', null, {
+                                    headers: {
+                                        "Access-Control-Allow-Origin": "*"
+                                    },
+                                    withCredentials: true
+                                })
+                                .then((response) => {
+                                    sessionStorage.clear();
+                                    navigate('/');
+                                    return response.data;
+                                })
+                                .catch((error) => {
+                                    return error;
+                                })
+                        }
+                        return error;
                     })
             }
         }
@@ -220,34 +264,63 @@ const Profile = () => {
     const updateInfo = () => {
         setEditMode(false);
         const formData = new FormData();
-        formData.append('nickname', updatingNickname);
-        formData.append('firstName', name);
-        formData.append('lastName', lastName);
-        formData.append('middleName', middleName);
-        if (birthdate !== '') {
-            formData.append('birthDate', birthdate);
+        if (name === '') {
+            alert('ЧЗХ, имя пустое');
         }
-        formData.append('description', description);
-        if (newPhoto[0] !== undefined) {
-            formData.append('photo', newPhoto[0]);
+        else if (lastName === '') {
+            alert('ЧЗХ, фамилия пустая');
         }
+        else if (middleName === '') {
+            alert('ЧЗХ, отчество пустое');
+        }
+        else {
 
-        return axios
-            .put('/accounts', formData, {
-                headers: {
-                    "Access-Control-Allow-Origin": "*"
-                },
-                withCredentials: true
-            })
-            .then((response) => {
-                return response.data;
-            })
-            .catch((error) => {
-                if (error.response.status === 403) {
-                    navigate('/');
-                }
-                return error.response.data;
-            });
+            formData.append('nickname', updatingNickname);
+            formData.append('firstName', name);
+            formData.append('lastName', lastName);
+            formData.append('middleName', middleName);
+            if (birthdate !== '') {
+                formData.append('birthDate', birthdate);
+            }
+            formData.append('description', description);
+            if (newPhoto[0] !== undefined) {
+                formData.append('photo', newPhoto[0]);
+            }
+
+            return axios
+                .put('/accounts', formData, {
+                    headers: {
+                        "Access-Control-Allow-Origin": "*"
+                    },
+                    withCredentials: true
+                })
+                .then((response) => {
+                    return response.data;
+                })
+                .catch((error) => {
+                    if (error.response.status === 403) {
+                        if (error.response.message === "У вас недостаточно прав для выполнения данного действия") {
+                            console.log(error.response);
+                        } else return axios
+                            .post('/auth/logout', null, {
+                                headers: {
+                                    "Access-Control-Allow-Origin": "*"
+                                },
+                                withCredentials: true
+                            })
+                            .then((response) => {
+                                sessionStorage.clear();
+                                ;
+                                navigate('/');
+                                return response.data;
+                            })
+                            .catch((error) => {
+                                return error;
+                            })
+                    }
+                    return error.response.data;
+                });
+        }
     }
 
     const deleteUser = (user) => {
@@ -271,6 +344,26 @@ const Profile = () => {
                 return response.data;
             })
             .catch((error) => {
+                if (error.response.status === 403) {
+                    if (error.response.message === "У вас недостаточно прав для выполнения данного действия") {
+                        console.log(error.response);
+                    } else return axios
+                        .post('/auth/logout', null, {
+                            headers: {
+                                "Access-Control-Allow-Origin": "*"
+                            },
+                            withCredentials: true
+                        })
+                        .then((response) => {
+                            sessionStorage.clear();
+                            ;
+                            navigate('/');
+                            return response.data;
+                        })
+                        .catch((error) => {
+                            return error;
+                        })
+                }
                 return error.response.data;
             })
 
@@ -288,7 +381,27 @@ const Profile = () => {
                 setSelectedChrono(response.data.minutes);
             })
             .catch((error) => {
-                return error.response.data;
+                if (error.response.status === 403) {
+                    if (error.response.message === "У вас недостаточно прав для выполнения данного действия") {
+                        console.log(error.response);
+                    } else return axios
+                        .post('/auth/logout', null, {
+                            headers: {
+                                "Access-Control-Allow-Origin": "*"
+                            },
+                            withCredentials: true
+                        })
+                        .then((response) => {
+                            sessionStorage.clear();
+                            ;
+                            navigate('/');
+                            return response.data;
+                        })
+                        .catch((error) => {
+                            return error;
+                        })
+                }
+                return error;
             })
     }
 
@@ -310,7 +423,27 @@ const Profile = () => {
                 return response.data;
             })
             .catch((error) => {
-                return error.response.data;
+                if (error.response.status === 403) {
+                    if (error.response.message === "У вас недостаточно прав для выполнения данного действия") {
+                        console.log(error.response);
+                    } else return axios
+                        .post('/auth/logout', null, {
+                            headers: {
+                                "Access-Control-Allow-Origin": "*"
+                            },
+                            withCredentials: true
+                        })
+                        .then((response) => {
+                            sessionStorage.clear();
+                            ;
+                            navigate('/');
+                            return response.data;
+                        })
+                        .catch((error) => {
+                            return error;
+                        })
+                }
+                return error;
             })
 
     }
@@ -344,24 +477,28 @@ const Profile = () => {
                             <div className="flex h-[5vh] text-2xl">
                                 Данные профиля
                             </div>
-                            <div className="flex ml-auto mr-3 ">
-                                <div className="mt-3 mr-1">
-                                    Установить частоту чистки комментариев (в минутах)
-                                </div>
+                            {
+                                isAdmin &&
+                                <div className="flex ml-auto mr-3 ">
+                                    <div className="mt-3 mr-1">
+                                        Установить частоту чистки комментариев (в минутах)
+                                    </div>
 
-                                <select value={selectedChrono} onChange={handleChrono} className="rounded-2xl w-[7%] h-[70%] mt-2 mr-3">
-                                    {
-                                        chronos.map((period) => {
-                                            return (
-                                                <option key="period" value={period}>
-                                                    {period}
-                                                </option>
-                                            )
-                                        })
-                                    }
-                                </select>
-                                <Button text="Установить" handleButton={setNewJobTime}/>
-                            </div>
+                                    <select value={selectedChrono} onChange={handleChrono}
+                                            className="rounded-2xl w-[7%] h-[70%] mt-2 mr-3">
+                                        {
+                                            chronos.map((period) => {
+                                                return (
+                                                    <option key="period" value={period}>
+                                                        {period}
+                                                    </option>
+                                                )
+                                            })
+                                        }
+                                    </select>
+                                    <Button text="Установить" handleButton={setNewJobTime}/>
+                                </div>
+                            }
                         </div>
 
                         <ProfileItem title="Фамилия"

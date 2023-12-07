@@ -21,15 +21,11 @@ const LoginForm = () => {
         if (registrationMode === false) {
             if (!email.match(/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i)) {
                 alert("email не подходит по формату");
-            }
-            else if (email === '') {
+            } else if (email === '') {
                 alert("Почему почта пустая?")
-            }
-            else if (password === '') {
+            } else if (password === '') {
                 alert("Почему пароль пустой?");
-            }
-
-            else {
+            } else {
                 return axios.post('/auth/login', {email: email, password: password}, {
                     headers: {
                         "Access-Control-Allow-Origin": "*"
@@ -42,7 +38,7 @@ const LoginForm = () => {
                         return response.data;
                     })
                     .catch((error) => {
-                        console.log(error.response.data.message);
+                        console.log(error.response);
                         return error;
                     })
             }
@@ -56,23 +52,17 @@ const LoginForm = () => {
         if (registrationMode === true) {
             if (!email.match(/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i)) {
                 alert("email не подходит по формату");
-            }
-            else if (email === '') {
+            } else if (email === '') {
                 alert("Почему почта пустая?")
-            }
-            else if (login === '') {
+            } else if (login === '') {
                 alert("Почему логин пустой?")
-            }
-            else if (password === '') {
+            } else if (password === '') {
                 alert("Почему пароль пустой?");
-            }
-            else if (password.length < 5) {
+            } else if (password.length < 5) {
                 alert("Пароль должен быть не меньше 5 символов")
-            }
-            else if (password !== secondPassword) {
+            } else if (password !== secondPassword) {
                 alert("Пароли не совпадают");
-            }
-            else {
+            } else {
                 return axios.post('/auth/register', {nickname: login, email: email, password: password}, {
                     headers: {
                         "Access-Control-Allow-Origin": "*"

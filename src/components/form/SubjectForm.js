@@ -2,7 +2,7 @@ import Button from "../buttons/Button";
 import {useState} from "react";
 import axios from "../../config/axios";
 
-const SubjectForm = ({ courseNumber }) => {
+const SubjectForm = ({courseNumber}) => {
 
     const [subjectTitle, setSubjectTitle] = useState('');
 
@@ -13,8 +13,7 @@ const SubjectForm = ({ courseNumber }) => {
         if (subjectTitle === '') {
             alert('Почему название предмета пустое?');
             return false;
-        }
-        else {
+        } else {
             return axios
                 .post('/subjects',
                     {
@@ -27,13 +26,16 @@ const SubjectForm = ({ courseNumber }) => {
                         },
                         withCredentials: true
                     }
-                    )
+                )
                 .then((response) => {
                     return response.data;
                 })
                 .catch((error) => {
-                    console.log(error);
-                    return error;
+                    if (error.response.status === 403) {
+                        console.log("Недостаточно прав");
+                    }
+                    console.log(error.response.data);
+                    return error.response.data;
                 });
         }
 
