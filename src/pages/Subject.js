@@ -57,7 +57,6 @@ const Subject = ({subjects, setSubjects, selectedSubject, setSelectedSubject}) =
                             })
                             .then((response) => {
                                 sessionStorage.clear();
-                                ;
                                 navigate('/');
                                 return response.data;
                             })
@@ -72,7 +71,7 @@ const Subject = ({subjects, setSubjects, selectedSubject, setSelectedSubject}) =
         const getData = async () => {
             let subjects = await getSubjects();
 
-            setTotalPages(subjects.totalPages);
+            setTotalPages(subjects.total_pages);
 
 
             let list = [];

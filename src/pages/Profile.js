@@ -43,6 +43,16 @@ const Profile = () => {
     const [chronos, setChronos] = useState([]);
     const [selectedChrono, setSelectedChrono] = useState(15);
 
+    const [editRoleMode, setEditRoleMode] = useState(false);
+
+    const [editRowId, setEditRowId] = useState(0);
+
+    const [rolesToAssign, setRolesToAssign] = useState([]);
+
+    const [selectedRole, setSelectedRole] = useState();
+
+    const [roleIdToUpdate, setRoleIdToUpdate] = useState();
+
     const ownPersonProfile = () => {
         if (sessionStorage.getItem('user') === null) {
             return false;
@@ -88,7 +98,6 @@ const Profile = () => {
                             })
                             .then((response) => {
                                 sessionStorage.clear();
-                                ;
                                 navigate('/');
                             })
                             .catch((error) => {
@@ -110,42 +119,56 @@ const Profile = () => {
 
         const getAllUsers = () => {
             console.log("AAAAAAAAAAAAAAAAAAAAAa - ", pageNumber);
-            return axios
-                .get('/accounts', {
-                    params: {
-                        pageNumber: pageNumber - 1,
-                        pageSize: pageSize
-                    },
-                    headers: {
-                        "Access-Control-Allow-Origin": "*"
-                    },
-                    withCredentials: true
-                })
-                .then((response) => {
-                    return response.data;
-                })
-                .catch((error) => {
-                    if (error.response.status === 403) {
-                        if (error.response.message === "У вас недостаточно прав для выполнения данного действия") {
-                            console.log(error.response);
-                        } else return axios
-                            .post('/auth/logout', null, {
-                                headers: {
-                                    "Access-Control-Allow-Origin": "*"
-                                },
-                                withCredentials: true
-                            })
-                            .then((response) => {
-                                sessionStorage.clear();
-                                navigate('/');
-                                return response.data;
-                            })
-                            .catch((error) => {
-                                return error;
-                            })
-                    }
-                    return error;
-                })
+            let ownsProfile = false;
+            if (sessionStorage.getItem('user') === null) {
+                ownsProfile = false;
+            } else ownsProfile = nickname === JSON.parse(sessionStorage.getItem('user')).nickname;
+
+            let admin = false;
+            if (JSON.parse(sessionStorage.getItem('user')) === null) {
+                admin = false;
+            } else if (JSON.parse(sessionStorage.getItem('user')).role === 'Администратор') {
+                admin = true;
+            }
+
+            if (admin && ownsProfile) {
+                return axios
+                    .get('/accounts', {
+                        params: {
+                            pageNumber: pageNumber - 1,
+                            pageSize: pageSize
+                        },
+                        headers: {
+                            "Access-Control-Allow-Origin": "*"
+                        },
+                        withCredentials: true
+                    })
+                    .then((response) => {
+                        return response.data;
+                    })
+                    .catch((error) => {
+                        if (error.response.status === 403) {
+                            if (error.response.message === "У вас недостаточно прав для выполнения данного действия") {
+                                console.log(error.response);
+                            } else return axios
+                                .post('/auth/logout', null, {
+                                    headers: {
+                                        "Access-Control-Allow-Origin": "*"
+                                    },
+                                    withCredentials: true
+                                })
+                                .then((response) => {
+                                    sessionStorage.clear();
+                                    navigate('/');
+                                    return response.data;
+                                })
+                                .catch((error) => {
+                                    return error;
+                                })
+                        }
+                        return error;
+                    })
+            }
         }
 
         const getProfileData = async () => {
@@ -164,7 +187,7 @@ const Profile = () => {
             setProfilePhotoName(info.photo_name_in_directory);
             if (info.role === 'Администратор') {
                 let users = await getAllUsers();
-                setTotalPages(users.totalPages);
+                setTotalPages(users.total_pages);
                 console.log(users.content);
                 setUsers(users.content);
             }
@@ -266,14 +289,11 @@ const Profile = () => {
         const formData = new FormData();
         if (name === '') {
             alert('ЧЗХ, имя пустое');
-        }
-        else if (lastName === '') {
+        } else if (lastName === '') {
             alert('ЧЗХ, фамилия пустая');
-        }
-        else if (middleName === '') {
+        } else if (middleName === '') {
             alert('ЧЗХ, отчество пустое');
-        }
-        else {
+        } else {
 
             formData.append('nickname', updatingNickname);
             formData.append('firstName', name);
@@ -356,7 +376,6 @@ const Profile = () => {
                         })
                         .then((response) => {
                             sessionStorage.clear();
-                            ;
                             navigate('/');
                             return response.data;
                         })
@@ -393,7 +412,87 @@ const Profile = () => {
                         })
                         .then((response) => {
                             sessionStorage.clear();
-                            ;
+                            navigate('/');
+                            return response.data;
+                        })
+                        .catch((error) => {
+                            return error;
+                        })
+                }
+                return error;
+            })
+    }
+
+    const setEditRole = async (id) => {
+        setEditRoleMode(!editRoleMode);
+        setEditRowId(id);
+        const roles = await getRoles();
+        let list = [];
+        for (let i = 0; i < roles.length; i++) {
+            list.push(
+                {
+                    id: roles[i].id,
+                    role: roles[i].role
+                }
+            );
+        }
+        setRolesToAssign(list);
+    }
+
+    const getRoles = () => {
+        return axios
+            .get('/roles', {
+                headers: {
+                    "Access-Control-Allow-Origin": "*"
+                },
+                withCredentials: true
+            })
+            .then((response) => {
+                console.log(response.data);
+                return response.data;
+            })
+            .catch((error) => {
+                console.log(error.response);
+                return error.response;
+            })
+    }
+
+    const handleNewRole = (event) => {
+        const selectedRoleInfo = event.target.value;
+        const [roleId, role] = selectedRoleInfo.split('-');
+        setRoleIdToUpdate(parseInt(roleId));
+    }
+
+    const sendChangeRoleRequest = (e) => {
+        console.log("Я отправил запрос на обновление");
+        return axios
+            .put('/accounts/' + editRowId + '/role',
+                {role_id: roleIdToUpdate},
+                {
+                    headers: {
+                        "Access-Control-Allow-Origin": "*"
+                    },
+                    withCredentials: true
+                }
+            )
+            .then((response) => {
+                setEditRoleMode(!editRoleMode);
+                setEditRowId(-1);
+                return response.data;
+            })
+            .catch((error) => {
+                if (error.response.status === 403) {
+                    if (error.response.message === "У вас недостаточно прав для выполнения данного действия") {
+                        console.log(error.response);
+                    } else return axios
+                        .post('/auth/logout', null, {
+                            headers: {
+                                "Access-Control-Allow-Origin": "*"
+                            },
+                            withCredentials: true
+                        })
+                        .then((response) => {
+                            sessionStorage.clear();
                             navigate('/');
                             return response.data;
                         })
@@ -481,7 +580,7 @@ const Profile = () => {
                                 isAdmin &&
                                 <div className="flex ml-auto mr-3 ">
                                     <div className="mt-3 mr-1">
-                                        Установить частоту чистки комментариев (в минутах)
+                                        Установить частоту чистки комментариев (в секундах)
                                     </div>
 
                                     <select value={selectedChrono} onChange={handleChrono}
@@ -599,7 +698,13 @@ const Profile = () => {
                                         Статус
                                     </th>
                                     <th scope="col" className="px-6 py-3">
+                                        Роль
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
                                         Забанить/разбанить
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
+                                        Изменить роль
                                     </th>
                                 </tr>
                                 </thead>
@@ -623,11 +728,49 @@ const Profile = () => {
                                                 <td className="px-6 py-4">
                                                     {user.is_banned ? "Забанен" : "Не забанен"}
                                                 </td>
+                                                {!editRoleMode &&
+                                                    <td className="px-6 py-4">
+                                                        {user.role}
+                                                    </td>
+                                                }
+                                                {editRoleMode &&
+                                                    <td className="px-6 py-4">
+                                                        {editRowId === user.id
+                                                            ?
+                                                            <select value={selectedRole} onChange={handleNewRole}
+                                                                    className="bg-black">
+                                                                <option>
+
+                                                                </option>
+                                                                {
+                                                                    rolesToAssign.map((role) => {
+                                                                        return (
+                                                                            <option key={role.id}
+                                                                                    value={`${role.id}-${role.role}`}>
+                                                                                {role.role}
+                                                                            </option>
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </select>
+                                                            : user.role}
+                                                    </td>
+                                                }
                                                 <td className="px-6 py-4">
                                                     <a href="#"
                                                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                                                        onClick={e => deleteUser(user)}>
                                                         {user.is_banned ? "Разбанить" : "Забанить"}
+                                                    </a>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <a href="#"
+                                                       className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                                                       onClick={e => setEditRole(user.id)}>
+                                                        {editRowId === user.id
+                                                            ? <Button text="Подтвердить"
+                                                                      handleButton={e => sendChangeRoleRequest(e)}/>
+                                                            : 'Изменить роль'}
                                                     </a>
                                                 </td>
                                             </tr>

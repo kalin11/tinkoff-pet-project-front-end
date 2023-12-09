@@ -11,6 +11,7 @@ import Publications from "./pages/Publications";
 import Publication from "./pages/Publication";
 import LoginForm from "./components/form/LoginForm";
 import Profile from "./pages/Profile"
+import Feed from "./pages/Feed";
 
 
 const App = () => {
@@ -94,6 +95,9 @@ const App = () => {
                     />
                     <Route path="/users/:nickname"
                            element={<Profile/>}
+                    />
+                    <Route path="/feed"
+                           element={<Feed/>}
                     />
                     <Route exact path="/about" element={<About/>}
                     />

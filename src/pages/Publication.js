@@ -79,6 +79,7 @@ const Publication = () => {
                     withCredentials: true
                 })
                 .then((response) => {
+                    console.log("Комменты ", response.data);
                     return response.data;
                 })
                 .catch((error) => {
@@ -106,7 +107,7 @@ const Publication = () => {
         const getDataComments = async () => {
             let comments = await getComments();
             console.log(comments);
-            setTotalPages(comments.totalPages);
+            setTotalPages(comments.total_pages);
 
             let list = [];
             for (let i = 0; i < comments.content.length; i++) {
@@ -114,13 +115,15 @@ const Publication = () => {
                 let content = comments.content[i].content;
                 let created_at = comments.content[i].created_at;
                 let username = comments.content[i].nickname;
+                let userId = comments.content[i].user_id;
 
                 list.push(
                     {
                         id: id,
                         username: username,
                         content: content,
-                        created_at: created_at
+                        created_at: created_at,
+                        user_id: userId
                     }
                 )
             }
@@ -288,7 +291,8 @@ const Publication = () => {
                                                      comment={comment.content}
                                                      createdDate={comment.created_at}
                                                      username={comment.username}
-                                                     commentId={comment.id}/>
+                                                     commentId={comment.id}
+                                        />
                                     )
                                 })
                             }
