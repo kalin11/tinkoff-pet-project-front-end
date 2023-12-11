@@ -100,6 +100,12 @@ const Subject = ({subjects, setSubjects, selectedSubject, setSelectedSubject}) =
                 <SubjectItemList subjects={subjects}
                                  selectedSubject={selectedSubject}
                                  setSelectedSubject={setSelectedSubject}/>
+
+                {
+                    isAdmin &&
+                    <SubjectForm courseNumber={searchParams.get('course')}/>
+                }
+
                 {!!totalPages &&
                     <Pagination
                         sx={{
@@ -107,11 +113,7 @@ const Subject = ({subjects, setSubjects, selectedSubject, setSelectedSubject}) =
                             justifyContent: 'center',
                             marginX: 'auto',
                         }}
-                        style={{
-                            width: "100%",
-                            position: "absolute",
-                            bottom: "5px",
-                        }} color="primary"
+                        color="primary"
                         count={totalPages}
                         page={pageNumber}
                         onChange={(_, num) => {
@@ -119,11 +121,6 @@ const Subject = ({subjects, setSubjects, selectedSubject, setSelectedSubject}) =
                         }}
 
                     />
-                }
-
-                {
-                    isAdmin &&
-                    <SubjectForm courseNumber={searchParams.get('course')}/>
                 }
 
             </div>
