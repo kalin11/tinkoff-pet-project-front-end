@@ -116,6 +116,7 @@ const Publication = () => {
                 let created_at = comments.content[i].created_at;
                 let username = comments.content[i].nickname;
                 let userId = comments.content[i].user_id;
+                let lastUpdatedAt = comments.content[i].last_updated_at;
 
                 list.push(
                     {
@@ -123,7 +124,8 @@ const Publication = () => {
                         username: username,
                         content: content,
                         created_at: created_at,
-                        user_id: userId
+                        user_id: userId,
+                        last_updated_at: lastUpdatedAt
                     }
                 )
             }
@@ -292,6 +294,7 @@ const Publication = () => {
                                                      createdDate={comment.created_at}
                                                      username={comment.username}
                                                      commentId={comment.id}
+                                                     lastUpdatedAt={comment.last_updated_at}
                                         />
                                     )
                                 })
@@ -333,7 +336,6 @@ const Publication = () => {
                                 (sessionStorage.getItem('user') !== null) &&
                                 <Button text="Создать новый комментарий" handleButton={handleButton}/>
                             }
-
                         </div>
                     </div>
                 </div>

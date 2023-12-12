@@ -233,26 +233,21 @@ const Publications = ({subjectTopicId, publications, setPublications, selectedPu
                 }
 
 
-
-
-                <Pagination
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        marginX: 'auto',
-                    }}
-                    style={{
-                        width: "100%",
-                        position: "absolute",
-                        bottom: "5px",
-                    }}
-                    color="primary"
-                    count={totalPages}
-                    page={pageNumber}
-                    onChange={(_, num) => {
-                        setPageNumber(num);
-                    }}
-                />
+                {!open &&
+                    <Pagination
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            marginX: 'auto',
+                        }}
+                        color="primary"
+                        count={totalPages}
+                        page={pageNumber}
+                        onChange={(_, num) => {
+                            setPageNumber(num);
+                        }}
+                    />
+                }
 
             </div>
 
