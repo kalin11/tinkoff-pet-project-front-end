@@ -1,8 +1,8 @@
-import { Fragment } from "react";
-import { Link } from 'react-router-dom';
+import {Fragment} from "react";
+import {Link} from 'react-router-dom';
 import HelloWorld from "../components/HelloWorld/HelloWorld";
 
-export default function Home() {
+const Home = () => {
     return (
         <Fragment>
             <HelloWorld />
@@ -12,3 +12,5 @@ export default function Home() {
         </Fragment>
     );
 }
+
+export default Home;

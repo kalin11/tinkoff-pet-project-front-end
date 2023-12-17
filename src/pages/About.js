@@ -1,9 +1,11 @@
-import { Fragment } from "react";
+import {Fragment} from "react";
 
-export default function Home() {
+const Home = () => {
     return (
         <Fragment>
             <p>This is About page</p>
         </Fragment>
     );
 }
+
+export default Home;
