@@ -233,9 +233,11 @@ const FeedItem = ({newsId, createdAt, description, nickname, newsTitle, files}) 
                             }
                         </div>
                     </div>
-                    <div>
-                        <Button text="Удалить новость" handleButton={deleteNews}/>
-                    </div>
+                    {isAdmin &&
+                        <div>
+                            <Button text="Удалить новость" handleButton={deleteNews}/>
+                        </div>
+                    }
                 </div>
             </div>
         </div>

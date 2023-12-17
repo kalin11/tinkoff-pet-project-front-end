@@ -42,6 +42,7 @@ const Profile = () => {
 
     const [chronos, setChronos] = useState([]);
     const [selectedChrono, setSelectedChrono] = useState(15);
+    const [chronExpression, setChronExpression] = useState('');
 
     const [editRoleMode, setEditRoleMode] = useState(false);
 
@@ -390,14 +391,14 @@ const Profile = () => {
 
     const setNewJobTime = () => {
         return axios
-            .post('/scheduler', {minutes: selectedChrono}, {
+            .post('/scheduler', {cron: chronExpression}, {
                 headers: {
                     "Access-Control-Allow-Origin": "*"
                 },
                 withCredentials: true
             })
             .then((response) => {
-                setSelectedChrono(response.data.minutes);
+                setChronExpression(response.data.cron);
             })
             .catch((error) => {
                 if (error.response.status === 403) {
@@ -580,21 +581,14 @@ const Profile = () => {
                                 isAdmin &&
                                 <div className="flex ml-auto mr-3 ">
                                     <div className="mt-3 mr-1">
-                                        Установить частоту чистки комментариев (в секундах)
+                                        Установить частоту чистки комментариев
                                     </div>
-
-                                    <select value={selectedChrono} onChange={handleChrono}
-                                            className="rounded-2xl w-[7%] h-[70%] mt-2 mr-3">
-                                        {
-                                            chronos.map((period) => {
-                                                return (
-                                                    <option key="period" value={period}>
-                                                        {period}
-                                                    </option>
-                                                )
-                                            })
-                                        }
-                                    </select>
+                                    <input value={chronExpression}
+                                           type="text"
+                                           placeholder="0 0 12 * * ?"
+                                           className="rounded-xl w-[20%]"
+                                           onChange={e => setChronExpression(e.target.value)}
+                                    />
                                     <Button text="Установить" handleButton={setNewJobTime}/>
                                 </div>
                             }
